@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en"> 
+<head>
+  <meta charset="utf-8" />
+  <title>Learning, Freedom and the Web</title>
+        
+    <link href="cover.css" rel="stylesheet" type="text/css" />
+  <meta name="viewport" content="width=device-width, maximum-scale=1.0" />
+    
+  </head>
+    
+  <body>
+    <a href="toc.html"><div id="bg-canvas">
+      <img src="images/index-bg.jpg"></div>
+    <div id="bg">
+            <a href="toc.html"><img src="images/index-cover.png" alt="Mozilla's Learning, Freedom, and the Web">
+      <div class="author-text">By Anya Kamenetz</div>
+        </div>
+
+        </div>
+        <p class="click-box"><span class="click">click / tap anywhere</span></div>
+          <div class="moz-logo"><img src="images/mozilla-cover-logo.png">
+        <div></a>
+    <script>
+        /* Dumb simple JavaScript to navigate to TOC on any gesture */
+    
+        document.getElementById('bg-canvas').ontouchend = function() {
+            document.location = "toc.html";
+        };
+    </script>
+                
+  </body>
+</html>
