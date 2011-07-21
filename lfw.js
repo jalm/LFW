@@ -75,7 +75,6 @@ LFW.scrollEnd = function() {
     } else {
       markerTop = marker.offsetTop - 20;
       isBestSoFar = markerTop < currentTop; // Offsets increase
-      console.log("markerTop / currentTop: ", markerTop, currentTop);
     }
     
     if (isBestSoFar) {

@@ -1125,3 +1125,7 @@ span.link-icon:active {
   /* Currently selected section */
   color: #d88f32;
 }
+
+#side .scroller {
+	overflow-x: hidden; /* Keep content from being left to right scrollable */
+}
