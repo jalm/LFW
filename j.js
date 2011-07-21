@@ -59,8 +59,15 @@ $(document).ready(function(){
   
   // Set up scrolling
   
-  document.addEventListener('touchmove', function(e){ e.preventDefault(); }, false);
-  howtoScroll = new iScroll('wrapper');
-  setTimeout(updateHowtoScroll, 500);
+  var touch = 'ontouchstart' in window; // Test for touch browser
+  
+  if (touch) {
+    document.addEventListener('touchmove', function(e){ e.preventDefault(); }, false);
+    howtoScroll = new iScroll('wrapper');
+    setTimeout(updateHowtoScroll, 500);
+  } else {
+    $('#wrapper').css("overflow-y", "auto");
+    $('#wrapper').css("overflow-x", "hidden");
+  }
 
 }); 

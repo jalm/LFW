@@ -49,19 +49,36 @@ LFW.linkify = function() {
   }
 };
 
-
 LFW.scrollEnd = function() {
   // A scroll on the main content ended.
   
   var markers = $('a[name^="lfw_"]'); // All section anchors, form "lfw_XXX"
-  var currentTop = mainScroll.y - 20;
+  
+  var currentTop;
+  if (mainScroll) {
+    // Fake scrolling
+     currentTop = mainScroll.y - 20;
+  } else {
+    currentTop = $('#main').scrollTop();
+  }
 
   var currentSectionMarker;
   
   markers.each(function(i, marker) {
-    var markerTop = mainScroll._offset(marker).top;
+    var markerTop; // Position of this marker in its scroller
+    var isBestSoFar = false;
     
-    if (markerTop > currentTop) {
+    if (mainScroll) {
+      // Fake scrolling - ask iScroll
+      markerTop = mainScroll._offset(marker).top;
+      isBestSoFar = markerTop > currentTop; // Offsets decrease
+    } else {
+      markerTop = marker.offsetTop - 20;
+      isBestSoFar = markerTop < currentTop; // Offsets increase
+      console.log("markerTop / currentTop: ", markerTop, currentTop);
+    }
+    
+    if (isBestSoFar) {
       // Best marker found so far
       currentSectionMarker = marker;
     } // Once it starts finding markers past the current position, it stops recording them
@@ -88,11 +105,17 @@ LFW.loaded = function() {
   
     document.addEventListener('touchmove', function(e){ e.preventDefault(); }, false);
 
-    mainScroll = new iScroll('main', {'onScrollEnd': LFW.scrollEnd});
+    var touch = 'ontouchstart' in window; // Test for touch browser
+
+    if (touch) {
+      mainScroll = new iScroll('main', {'onScrollEnd': LFW.scrollEnd});
+      sideScroll = new iScroll('side');
+    } else {
+      $('#main').scroll(LFW.scrollEnd);
+    }
     var currentHash = document.location.toString().split('#')[1];
     LFW.jumpTo(currentHash, true);
     
-    sideScroll = new iScroll('side');
     console.log('scroll create');
 
     $("dd").hide(); // Close all the nav lists
@@ -100,8 +123,19 @@ LFW.loaded = function() {
 
     var openElement = $("dt.open")[0];
     if (openElement) {
-      sideScroll.scrollToElement(openElement, 0); // Scroll to the nav list
-      sideScroll.scrollTo(0, -80, 0, true); // Scroll backwards a bit so the element isn't right at the top
+      // Make element visible
+
+      var scrollPadding = 80; // Make this much room in addition to making element visible
+      
+      if (sideScroll) {
+        // Fake scrolling
+        sideScroll.scrollToElement(openElement, 0); // Scroll to the nav list
+        sideScroll.scrollTo(0, -scrollPadding, 0, true); // Scroll backwards a bit so the element isn't right at the top
+      } else {
+        // Desktop scrolling
+        var targetScroll = openElement.offsetTop;
+        $('#side').scrollTop(targetScroll - scrollPadding);
+      }
     }
     
     $("dt a").click(function() {
@@ -145,15 +179,24 @@ LFW.jumpTo = function(anchor, instant) {
   var time = instant ? 0 : 500;
   anchor = 'lfw_' + anchor;
   
+  var targetAnchor = $('a[name=' + anchor + ']')[0];
+
   if (mainScroll) {
-    var element = $('a[name=' + anchor + ']')[0];
-    if (element) {
-      mainScroll.scrollToElement(element, time);
+    if (targetAnchor) {
+      mainScroll.scrollToElement(targetAnchor, time);
     } else {
       console.error("No <a> found with name=", anchor);
     }
   } else {
-    console.error("Navigation called before content has loaded.");
+    // No iScroll
+
+    if (targetAnchor) {
+      // Scroll desktop-style
+      var targetScroll = targetAnchor.offsetTop;
+      $('#main').scrollTop(targetScroll);
+    } else {
+      console.error("No <a> found with name=", anchor);
+    }
   }
 };
 
