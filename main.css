@@ -1129,3 +1129,11 @@ span.link-icon:active {
 #side .scroller {
 	overflow-x: hidden; /* Keep content from being left to right scrollable */
 }
+
+#fb-root iframe {
+	border:none;
+	overflow:hidden;
+	width:195px;
+	height:80px;
+	margin-left: 40px;
+}

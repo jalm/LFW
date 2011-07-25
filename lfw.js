@@ -6,18 +6,30 @@ var sideScroll; // global
 
 var LFW = {};
 
+LFW.facebookLikePrefix = 'http://www.facebook.com/plugins/like.php?href=';
+LFW.facebookLikeURL = '';
 
 LFW.sideScrollRefresh = function() {
   if (sideScroll) {
     sideScroll.refresh(); // Adjust scroller for new elements and fonts loading
-    console.log('scroll refresh');
   }
 };
 
 LFW.mainScrollRefresh = function() {
   if (mainScroll) {
     mainScroll.refresh(); // Adjust scroller for new elements and fonts loading
-    console.log('scroll refresh');
+  }
+};
+
+LFW.updateLikeButton = function(link) {
+  // Update like button to passed in link, otherwise use document URL.
+  
+  if (!link) link = window.location.href;
+  var target = LFW.facebookLikePrefix + escape(link).replace(/\//g,"%2F");
+  if (LFW.facebookLikeURL != target) {
+    // The URL changed.
+    LFW.facebookLikeURL = target;
+    $('#fb-root iframe').attr('src', target);
   }
 };
 
@@ -52,8 +64,8 @@ LFW.linkify = function() {
 LFW.scrollEnd = function() {
   // A scroll on the main content ended.
   
+  // Update highlighted section
   var markers = $('a[name^="lfw_"]'); // All section anchors, form "lfw_XXX"
-  
   var currentTop;
   if (mainScroll) {
     // Fake scrolling
@@ -84,7 +96,7 @@ LFW.scrollEnd = function() {
     
   });
   
-  if (!currentSectionMarker) {
+  if (!currentSectionMarker || !($(currentSectionMarker).length)) {
     console.log("No section marker found.");
     return;
   }
@@ -95,6 +107,9 @@ LFW.scrollEnd = function() {
   sectionLink = $('a[href$=#' + sectionName + ']'); // hrefs that link to #name for the found anchor
   $('a.current').removeClass('current');
   sectionLink.addClass('current');
+  
+  // Update Like button to that URL.
+  LFW.updateLikeButton(sectionLink[0].href);
 };
 
 LFW.loaded = function() {
@@ -170,6 +185,9 @@ LFW.loaded = function() {
     setTimeout(LFW.mainScrollRefresh, 500);
     setTimeout(LFW.sideScrollRefresh, 5000);
     setTimeout(LFW.mainScrollRefresh, 5000);
+    
+    // Update Like button
+    LFW.updateLikeButton();
 };
 
 LFW.jumpTo = function(anchor, instant) {
