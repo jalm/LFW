@@ -461,11 +461,11 @@ p.text5{ /* for 2-3liners */
 .button{
 			background-image:url(images/emptybutton.png);
 			background-repeat: no-repeat;
-			width:22px;
-			height:22px;
+			width:40px;
+			height:40px;
 			float:left;
 			cursor:pointer;
-			margin-bottom: 15px;
+			margin: 10px 15px 0 0;
 }
 
 .button.filled{
@@ -499,11 +499,11 @@ img.center {
 			flaot: left;
 }
 	
-div.center {   
+div.center {
 			display: block;   
 			margin-left: auto;  
 			margin-right: auto;
-			width:110px;
+			width:275px;
 			padding-top: 10px;
 			padding-bottom:20px;
 			}
